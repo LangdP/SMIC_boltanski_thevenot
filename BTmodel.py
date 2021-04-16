@@ -102,6 +102,60 @@ class Listener(Player):
 # I will work on more legible graphical renderings of it soon, but everything seems
 # to be working fine. Obviously this is not a very interesting example, so we'd have
 # to find a better one.
+
+# These are our messages
 messages = ["ing", "in"]
-speaker = Speaker("civic", 1)
-listener = Listener("civic", 1)
+
+#Civic speakers and listeners
+civic_speaker = Speaker("civic", 1)
+civic_listener = Listener("civic", 1)
+
+print("In the civic world: \n")
+print("If they want to appear friendly, there is a probability of " + 
+    str(civic_speaker.choice_rule("ing", "friendly")) + 
+    " that a speaker will use the 'ing' variant.\n")
+
+print("If they hear a 'ing' variant, there is a probability of " +
+    str(civic_listener.lis1("friendly", "ing")) +
+    " that a listener interprets it as indexing 'friendly'.\n")
+
+#Industrial speakers and listeners
+industrial_speaker = Speaker("industrial", 1)
+industrial_listener = Listener("industrial", 1)
+
+print("In the industrial world: \n")
+print("If they want to appear competent, there is a probability of " + 
+    str(industrial_speaker.choice_rule("ing", "competent")) + 
+    " that a speaker will use the 'ing' variant.\n")
+
+print("If they hear a 'ing' variant, there is a probability of " +
+    str(industrial_listener.lis1("competent", "ing")) +
+    " that a listener interprets it as indexing 'friendly'.\n")
+
+#Inspired speakers and listeners
+inspired_speaker = Speaker("inspired", 1)
+inspired_listener = Listener("inspired", 1)
+
+print("In the inspired world: \n")
+print("If they want to appear insightful, there is a probability of " + 
+    str(inspired_speaker.choice_rule("ing", "insightful")) + 
+    " that a speaker will use the 'ing' variant.\n")
+
+print("If they hear a 'ing' variant, there is a probability of " +
+    str(inspired_listener.lis1("insightful", "ing")) +
+    " that a listener interprets it as indexing 'insightful'.\n")
+
+
+# Additional test/see what it might do with what I understand from clashes:
+print("If the speaker assumes they are in the civic world, \
+    but the listener assumes they are in the industrial world:\n")
+
+print("If they want to appear friendly, there is a probability of " + 
+    str(civic_speaker.choice_rule("in", "friendly")) + 
+    " that a speaker will use the 'in' variant.\n")
+
+print("If they hear a 'in' variant, there is a probability of " +
+    str(industrial_listener.lis1("competent", "in")) +
+    " that a listener interprets it as indexing 'competent'.\n")
+
+
