@@ -64,7 +64,7 @@ class Player:
         return prop_given_m
             
 
-# This is the Speaker class, it takes a world and a temperature paramter as 
+# This is the Speaker class, it takes a world and a temperature parameter as 
 # arguments. It inherits the literal interpretations from the player class.
 class Speaker(Player):
     def __init__(self, world, alpha) -> None:
