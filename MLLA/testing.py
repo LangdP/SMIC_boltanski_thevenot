@@ -18,12 +18,16 @@ industrial_listener = Listener("industrial", 1)
 props = ["competent", "incompetent"]
 indus_speaker_pred = {m : industrial_speaker.choice_rule(m, messages, props[0]) 
     for m in messages}
+
+# We can use the viz function for detailed look at one case
 viz(indus_speaker_pred)
 
 indus_speaker_pred = {p : 
     {m : industrial_speaker.choice_rule(m, messages, p) 
         for m in messages} 
     for p in props}
+
+# We can also use it to generate barplot with many cases
 viz(indus_speaker_pred)
 
 civic_speaker = Speaker("civic", 1)
