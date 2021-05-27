@@ -1,5 +1,5 @@
 #Import packages
-from BTmodel import *
+from BTmodel_v1 import *
 from viz_functions import *
 
 
