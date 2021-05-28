@@ -5,7 +5,6 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
 
 def viz(outcomes, lis=False):
     # This function takes in a series of states and their probabilities
