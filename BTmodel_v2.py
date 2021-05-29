@@ -24,6 +24,10 @@ class World:
         self.world_name = world_name
 
         # Here we set the properties we're interested in for each world
+        # In the second version of the model, this could be the FUN thing
+        # Maybe I will make it more complex in the future, including
+        # probabilities on this too, but right now let's keep it like this.
+
         if self.world_name == "industrial":
             self.properties = ["competent", "incompetent"]
         elif self.world_name == "civic":
@@ -48,41 +52,53 @@ class World:
             self.interpretation_function = {"ing": [self.properties[0], self.properties[1]],
                                             "in": [self.properties[0], self.properties[1]]}
 
+# This class is the priors, it is a special kind of dictionary to make it
+# easy to store the priors for each player in the correct format.
+class Priors:
+    def __init__(self, world_priors, prop_priors) -> None:
+        self.world_priors = world_priors
+        self.prop_priors = prop_priors
+        self.priors = {}
+        for world in world_priors:
+            self.priors[world] = [world_priors[world], 
+                                {prop:prob for prop, prob in prop_priors.items() 
+                                if prop in World(world).properties}]
+
+
 
 # This is our Player class. I assume that from a cognitive standpoint it makes
 # sense that all players have access to literal meanings, so I put them there
 # Otherwise not very interesting
 class Player:
-    def __init__(self, world) -> None:
-        self.world = World(world)
-        # These are the priors over properties. Right now, they have to be set manually
-        # surely we want this to be easily parameterized in the future, that way it would
-        # allow us to have different priors for speaker and listener, which is not possible
-        # right now
-        self.prior_prop = {
-            self.world.properties[0]: 0.5, self.world.properties[1]: 0.5}
+    def __init__(self, priors) -> None:
+        # These are the full priors for the player, the .priors attr
+        # of a Priors object
+        self.priors = priors.priors
 
-    def conditionalization(self, prop, action):
-        def interpret(
-            utt, prop): return 1 if prop in self.world.interpretation_function[utt] else 0
-        prop_given_m = ((interpret(action, prop))
-                        / (sum([interpret(action, prop) for prop in self.world.properties])))
-        return prop_given_m
+
+    def conditionalization(self, world, prop, utt):
+        wworld = World(world)
+        interpret = lambda utt, prop :  1 \
+            if prop in wworld.interpretation_function[utt]\
+             else 0
+        prop_given_mw = ((interpret(utt, prop))
+                        / (sum([interpret(utt, prop) for prop in wworld.properties])))
+        return prop_given_mw
 
 
 # This is the Speaker class, it takes a world and a temperature parameter as
 # arguments. It inherits the literal interpretations from the player class.
 class Speaker(Player):
-    def __init__(self, world, alpha) -> None:
-        super().__init__(world)
+    def __init__(self, priors, alpha) -> None:
+        super().__init__(priors)
         self.alpha = alpha
 
-    def utility(self, prop, action):
-        return my_log(self.conditionalization(prop, action))
+    def utility(self, world, prop, utt):
+        return my_log(self.conditionalization(world, prop, utt) * self.priors[world][0])
 
-    def choice_rule(self, action, messages, prop):
-        return (exp(self.alpha * self.utility(prop, action))
-                / sum([exp(self.alpha * self.utility(prop, message)) for message in messages]))
+    def choice_rule(self, world, utt, messages, prop):
+        return (exp(self.alpha * self.utility(world, prop, utt))
+                / sum([exp(self.alpha * self.utility(world, prop, message)) for message in messages]))
 
 
 # This is the Listener class. Not much to say here except that this layout makes
@@ -91,14 +107,29 @@ class Speaker(Player):
 # to play with once we have more of an idea how clashes work.
 # In any case, each listener envisions their own player.
 class Listener(Player):
-    def __init__(self, world, alpha) -> None:
-        super().__init__(world)
-        self._speaker = Speaker(world, alpha)
+    def __init__(self, priors, alpha, beta) -> None:
+        super().__init__(priors)
+        self._speaker = Speaker(priors, alpha)
+        self.alpha = alpha
+        self.beta = beta
 
-    def lis0(self, prop, action):
-        return self.conditionalization(prop, action)
+    def lis(self, world, prop, utt, messages):
+        return ((self.priors[world][1][prop] * self._speaker.choice_rule(world, utt, messages, prop)) /
+                sum([self.priors[world][1][p] * self._speaker.choice_rule(world, utt, messages, p)
+                     for p in World(world).properties]))
+    
+    def update_world_priors(self, utt, messages):
+        scores = []
+        for w in self.priors:
+            for p in World(w).properties:
+                if World(w).order_of_worth.index(p) == 0:
+                    score = self.priors[w][0] + self.priors[w][0] * self.lis(w, p, utt, messages) 
+                else:
+                    pass
+            scores.append(score)
+        i = 0
+        for w in self.priors:
+            self.priors[w][0] = (exp(self.beta * scores[i]) / 
+                sum([exp(self.beta * score) for score in scores]))
+            i += 1
 
-    def lis1(self, prop, action):
-        return ((self.prior_prop[prop] * self._speaker.choice_rule(action, prop)) /
-                sum([self.prior_prop[p] * self._speaker.choice_rule(action, p)
-                     for p in self.world.properties]))
