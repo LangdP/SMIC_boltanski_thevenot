@@ -20,13 +20,17 @@ indus_speaker_pred = {m: industrial_speaker.choice_rule(m, messages, props[0])
                       for m in messages}
 
 # We can use the viz function for detailed look at one case
-viz(indus_speaker_pred)
+viz(indus_speaker_pred, full_results=False)
 
 indus_speaker_pred = {p:
                       {m: industrial_speaker.choice_rule(m, messages, p)
                        for m in messages}
                       for p in props}
 
+indus_listener_pred = {m:
+                      {p: industrial_listener.lis1(p, m, messages)
+                       for p in props}
+                      for m in messages}
 # We can also use it to generate barplot with many cases
 viz(indus_speaker_pred)
 

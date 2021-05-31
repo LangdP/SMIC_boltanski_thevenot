@@ -7,23 +7,16 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def viz(outcomes, lis=False):
+def viz(outcomes, type="speaker", full_results=True):
     # This function takes in a series of states and their probabilities
     # in the form of a dictionary and gives out a histogram representing them.
     ylab = "Probability"
-    if lis:
+    if type == "listener":
         xlab = "Properties"
         title = "Listener interpretations"
     else:
         xlab = "Utterances"
         title = "Speaker intentions"
-
-    full_results = True
-    for key in outcomes:
-        if type(outcomes[key]) == dict:
-            pass
-        else:
-            full_results = False
 
     if full_results:
         dfs = {key: pd.DataFrame({'x': list(outcomes[key].keys()),

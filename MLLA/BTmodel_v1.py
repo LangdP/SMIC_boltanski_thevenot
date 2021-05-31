@@ -98,7 +98,7 @@ class Listener(Player):
     def lis0(self, prop, action):
         return self.conditionalization(prop, action)
 
-    def lis1(self, prop, action):
-        return ((self.prior_prop[prop] * self._speaker.choice_rule(action, prop)) /
-                sum([self.prior_prop[p] * self._speaker.choice_rule(action, p)
+    def lis1(self, prop, action, messages):
+        return ((self.prior_prop[prop] * self._speaker.choice_rule(action, messages, prop)) /
+                sum([self.prior_prop[p] * self._speaker.choice_rule(action, messages, p)
                      for p in self.world.properties]))
