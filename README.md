@@ -4,3 +4,11 @@ This is the implementation in python of the original model for Boltanski & Thév
 
 [smic_url]: http://www.socialmeaning.eu/
 
+# Version 1
+
+## Expl
+## Viz
+# Version 2
+
+## Expl
+## Viz
