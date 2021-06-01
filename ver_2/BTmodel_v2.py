@@ -14,20 +14,20 @@ world_priors = {
     "inspired": 1/5,
     "domestic": 1/5,
     "fame": 1/5,
-    }
+}
 
 # Define priors over properties here
 prop_priors = {
-    "competent":0.5,
-    "incompetent":0.5,
-    "friendly":0.5,
-    "unfriendly":0.5,
-    "insightful":0.5,
-    "uninsightful":0.5,
-    "cool":0.5,
-    "uncool":0.5,
-    "traditional":0.5,
-    "non-traditional":0.5
+    "competent": 0.5,
+    "incompetent": 0.5,
+    "friendly": 0.5,
+    "unfriendly": 0.5,
+    "insightful": 0.5,
+    "uninsightful": 0.5,
+    "cool": 0.5,
+    "uncool": 0.5,
+    "traditional": 0.5,
+    "non-traditional": 0.5
 }
 
 # Build priors
