@@ -18,8 +18,8 @@ class World:
                                             "in": [self.properties[1]]}
         def __civic():
             self.properties = ["friendly", "unfriendly"]
-            self.interpretation_function = {"ing": [self.properties[0]],
-                                            "in": [self.properties[1]]}
+            self.interpretation_function = {"ing": [self.properties[1]],
+                                            "in": [self.properties[0]]}
         def __inspired():
             self.properties = ["insightful", "uninsightful"]
             self.interpretation_function = {"ing": [self.properties[0], self.properties[1]],
