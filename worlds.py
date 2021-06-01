@@ -1,5 +1,3 @@
-
-
 # This is the world class. It is supposed to represent worlds in the model
 # , along with their attributes (mostly orders of worth).
 # The orders of worth have to be set manually right now, but once we have
