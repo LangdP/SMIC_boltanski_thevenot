@@ -7,38 +7,16 @@ import matplotlib.pyplot as plt
 
 
 def viz(outcomes, type="speaker", full_results=True):
-    ylab = "Probability"
-    if type == "listener":
-        xlab = "Properties"
-        title = "Listener interpretations"
-    else:
-        xlab = "Utterances"
-        title = "Speaker intentions"
-
-    if full_results:
-        dfs = {key: pd.DataFrame({'x': list(outcomes[key][1].keys()),
-                                 'y': list(outcomes[key][1].values())}) for key in outcomes}
-        df_list = []
-        for df_key in dfs.keys():
-            dfs[df_key]['hue'] = df_key
-            df_list.append(dfs[df_key])
-
-        res = pd.concat(df_list)
-        ax = sns.barplot(x='x', y='y',
-                         data=res,
-                         hue='hue')
-        ax.set(xlabel=xlab, ylabel=ylab, title=title)
-        ax.legend(bbox_to_anchor=(1.01, 1),
-                  borderaxespad=0, )
-        plt.tight_layout()
-        return plt.show()
-    else:
-        plt.bar(outcomes.keys(), outcomes.values())
-        return plt.show()
+    cases = {"speaker": speaker_viz(outcomes),
+            "listener": "Not yet"}
+    return cases.get(type, "Invalid player type")
 
 
 def speaker_viz(outcomes):
+    xlab = "Probability"
+    title = "Speaker choice rule probabilities"
     probs = [outcomes[key][0] for key in outcomes]
+    probs_alpha = []
     dfs = {key:
            {k: pd.DataFrame({'x': list(outcomes[key][1][k].keys()),
                              'y': list(outcomes[key][1][k].values())})
@@ -51,13 +29,19 @@ def speaker_viz(outcomes):
             dfs[df_key][df_k]['hue'] = df_k
             df_pairs[df_key].append(dfs[df_key][df_k])
     i = 0
+    fig, axs = plt.subplots(len(outcomes), 1, sharex=True)
+    fig.suptitle(title)
     for key in df_pairs:
+        ylab = key + " (" + str(probs[i])[:3] + ")"
         res = pd.concat(df_pairs[key])
-        fig, axs = plt.subplots(len(outcomes), 1, sharex=True, squeeze=False)
-        sns.barplot(x='x', y='y',
+        sns.barplot(x='y', y='x',
                              data=res,
                              hue='hue', 
-                             ax = axs[i][0])
+                             ax = axs[i])
+        axs[i].legend(bbox_to_anchor=(1.02, 1),
+                    loc='upper left',
+                    borderaxespad=0, )
+        axs[i].set(xlabel=xlab, ylabel=ylab) 
         i += 1
 
     return plt.show()
