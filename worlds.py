@@ -4,39 +4,44 @@
 # all the properties we're interested in along with the orders of worth, we can
 # easily generate a world only using its name.
 
-
 class World:
     def __init__(self, world_name) -> None:
         self.world_name = world_name
-
-        # Here we set the properties we're interested in for each world
-        # In the second version of the model, this could be the FUN thing
-        # Maybe I will make it more complex in the future, including
-        # probabilities on this too, but right now let's keep it like this.
-
-        if self.world_name == "industrial":
-            self.properties = ["competent", "incompetent"]
-        elif self.world_name == "civic":
-            self.properties = ["friendly", "unfriendly"]
-        elif self.world_name == "inspired":
-            self.properties = ["insightful", "uninsightful"]
-
-        # We set the order of worth as a list. Right now this is not very
-        # interesting because it's not clear to me how we're gonna use the
-        # orders of worth anyway, but I still put it in the only way I
-        # could make sense of it
+        self.__world_construction()
         self.order_of_worth = [self.properties[0], self.properties[1]]
 
-        # This links variants to properties, depending on the world we're in
-        if self.world_name == "industrial":
+    def __world_construction(self):
+
+        def __industrial():
+            self.properties = ["competent", "incompetent"]
             self.interpretation_function = {"ing": [self.properties[0]],
                                             "in": [self.properties[1]]}
-        elif self.world_name == "civic":
-            self.interpretation_function = {"ing": [self.properties[1]],
-                                            "in": [self.properties[0]]}
-        elif self.world_name == "inspired":
+        def __civic():
+            self.properties = ["friendly", "unfriendly"]
+            self.interpretation_function = {"ing": [self.properties[0]],
+                                            "in": [self.properties[1]]}
+        def __inspired():
+            self.properties = ["insightful", "uninsightful"]
             self.interpretation_function = {"ing": [self.properties[0], self.properties[1]],
                                             "in": [self.properties[0], self.properties[1]]}
+        def __domestic():
+            self.properties = ["traditional", "non-traditional"]
+            self.interpretation_function = {"ing": [self.properties[0]],
+                                            "in": [self.properties[1]]}
+        def __fame():
+            self.properties = ["cool", "uncool"]
+            self.interpretation_function = {"ing": [self.properties[1]],
+                                                "in": [self.properties[0]]}
+
+        wc = {
+            "industrial": __industrial,
+            "civic": __civic,
+            "inspired": __inspired,
+            "domestic": __domestic,
+            "fame": __fame,
+        }
+
+        return wc.get(self.world_name, "Not a valid world name.")()
 
 # This class is the priors, it is a special kind of dictionary to make it
 # easy to store the priors for each player in the correct format.
