@@ -1,7 +1,4 @@
-
-# This program is the first implementation of the BT models
-# that we use in the SMIC project, see README for more info
-
+# Import packages
 from math import exp
 from helpers import *
 from worlds import *
@@ -40,6 +37,8 @@ class Speaker(Player):
         return (exp(self.alpha * self.utility(world, prop, utt))
                 / sum([exp(self.alpha * self.utility(world, prop, message)) for message in messages]))
 
+# The two following methods return an object of the right shape to use the viz 
+# function on. 
     def prediction(self, world, messages):
         props = World(world).properties
         preds = {p:
@@ -60,10 +59,10 @@ class Speaker(Player):
                         ]
         return preds
 
-# This is the Li for  {m: self.choice_rule(world, m, messages, p)p in props}stener class. Not much to say here except that this layout makes
-# it clear that the l  for m in messages}istener envisions the speaker as belonging to the same
-# world as them, whicfor p in props}h is not necessarily true and something we might want
-# to play with once we have more of an idea how clashes work.
+# This is the Listener class. Not much to say here except that this layout makes
+# it clear that the listener envisions the speaker as having the same priors
+# as them with regards to worlds, which is not necessarily true and something
+# we might want to play with once we have more of an idea how clashes work.
 # In any case, each listener envisions their own player.
 
 
@@ -79,6 +78,8 @@ class Listener(Player):
                 sum([self.priors[world][1][p] * self._speaker.choice_rule(world, utt, messages, p)
                      for p in World(world).properties]))
 
+# This updates the priors over worlds. So far it is not very satisfactory and 
+# feels unnatural to describe formally, but it does the job. 
     def update_world_priors(self, utt, messages):
         scores = []
         for w in self.priors:

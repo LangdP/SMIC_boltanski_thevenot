@@ -1,5 +1,5 @@
 # This is the world class. It is supposed to represent worlds in the model
-# , along with their attributes (mostly orders of worth).
+# , along with their attributes (including orders of worth).
 # The orders of worth have to be set manually right now, but once we have
 # all the properties we're interested in along with the orders of worth, we can
 # easily generate a world only using its name.
@@ -45,7 +45,6 @@ class World:
 
 # This class is the priors, it is a special kind of dictionary to make it
 # easy to store the priors for each player in the correct format.
-
 
 class Priors:
     def __init__(self, world_priors, prop_priors) -> None:
